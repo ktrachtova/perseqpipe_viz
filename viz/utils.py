@@ -7,12 +7,14 @@ import plotly.express as px
 import seaborn as sns
 import matplotlib.pyplot as plt
 
+
 from sklearn.preprocessing import StandardScaler
 from sklearn.decomposition import PCA
 from matplotlib.patches import Patch
 from viz.settings import HEATMAP_COLORS
-from plotly.io import to_image
+import plotly.io as pio
 
+pio.kaleido.scope.mathjax = None
 
 
 def safe_read_table(uploaded_file, index_col=None, file_description="uploaded file"):
@@ -43,15 +45,18 @@ def safe_read_table(uploaded_file, index_col=None, file_description="uploaded fi
 
 
 # Function to create bar plots
-def plot_bar_chart(df, category, color, y_axis_range, columns_to_render, text_bars = False):
+def plot_bar_chart(df, category, color, y_axis_range, columns_to_render, text_bars = False, remove_samples = None):
     # Create yaxis label text based on whether we visualize counts or %
     if columns_to_render == "counts":
         yaxis_label = "read counts"
     else:
         yaxis_label = "read %"
 
+    # Remove samples
+    df_filtered = df[~df["sample"].isin(remove_samples)]
+
     if text_bars:
-        fig = px.bar(df, x='sample', y=category, title=f"{category}", 
+        fig = px.bar(df_filtered, x='sample', y=category, title=f"{category}", 
                     labels={category: yaxis_label, "Sample": "Sample"}, 
                     height=500,
                     text_auto='.2s',
@@ -60,7 +65,7 @@ def plot_bar_chart(df, category, color, y_axis_range, columns_to_render, text_ba
         fig.update_traces(textfont_size=12, textangle=0, textposition="outside", cliponaxis=False)
 
     else:
-        fig = px.bar(df, x='sample', y=category, title=f"{category}", 
+        fig = px.bar(df_filtered, x='sample', y=category, title=f"{category}", 
                     labels={category: yaxis_label, "Sample": "Sample"}, 
                     height=500,
                     color_discrete_sequence=[color]
@@ -69,7 +74,7 @@ def plot_bar_chart(df, category, color, y_axis_range, columns_to_render, text_ba
         fig.update_yaxes(range=y_axis_range)  # Set uniform y-axis range
 
     #fig.update_layout(xaxis_tickangle=-90, showlegend=False)
-    max_label_len = max(df["sample"].astype(str).map(len))
+    max_label_len = max(df_filtered["sample"].astype(str).map(len))
     bottom_margin = min(300, 100 + max_label_len * 6)  # cap at 300
 
     fig.update_layout(
@@ -299,59 +304,32 @@ def plot_pca(expression_df: pd.DataFrame, metadata_df: pd.DataFrame, gene_column
     return fig
 
 
-def download_barplots(plots_html, plots_pdf, plot_type):
-    """
-    Download buttons for barplots in 3 different formats - PDF, PNG and HTML
-    """
-    zip_buffer_html = io.BytesIO()
-    with zipfile.ZipFile(zip_buffer_html, 'w', zipfile.ZIP_DEFLATED) as zip_file:
-        for title, html_bytes in plots_html.items():
-            zip_file.writestr(f"{title}.html", html_bytes)
-    zip_buffer_html.seek(0)
-
-    zip_buffer_pdf = io.BytesIO()
-    with zipfile.ZipFile(zip_buffer_pdf, 'w', zipfile.ZIP_DEFLATED) as zip_file:
-        for title, fig in plots_pdf.items():
-            # Convert Plotly figure to PDF
-            pdf_bytes = to_image(fig, format="pdf")
-            # Write PDF to ZIP file
-            zip_file.writestr(f"{title}.pdf", pdf_bytes)
-    zip_buffer_pdf.seek(0)
-
-    zip_buffer_png = io.BytesIO()
-    with zipfile.ZipFile(zip_buffer_png, 'w', zipfile.ZIP_DEFLATED) as zip_file:
-        for title, fig in plots_pdf.items():
-            # Convert Plotly figure to PNG
-            png_bytes = to_image(fig, format="png")
-            # Write PNG to ZIP file
-            zip_file.writestr(f"{title}.png", png_bytes)
-    zip_buffer_png.seek(0)
-
-    col1, col2, col3 = st.columns(3)
-    with col1:
-        st.download_button(
-            label="Download Plots HTML",
-            data=zip_buffer_html,
-            file_name=f"html_{plot_type}.zip",
-            mime="application/zip",
-            use_container_width=True,
-            key=f"html_{plot_type}"
-        )
-    with col2:
-        st.download_button(
-            label="Download Plots PDF",
-            data=zip_buffer_pdf,
-            file_name=f"pdf_{plot_type}.zip",
-            mime="application/zip",
-            use_container_width=True,
-            key=f"pdf_{plot_type}"
-        )
-    with col3:
-        st.download_button(
-            label="Download Plots PNG",
-            data=zip_buffer_png,
-            file_name=f"png_{plot_type}.zip",
-            mime="application/zip",
-            use_container_width=True,
-            key=f"png_{plot_type}"
-        )
+# Generate ZIP of all HTML plots (cached)
+def generate_zip(plot_dict, type):
+    if type == "html":
+        zip_buffer = io.BytesIO()
+        with zipfile.ZipFile(zip_buffer, "w", zipfile.ZIP_DEFLATED) as zip_file:
+            for title, html_content in plot_dict.items():
+                zip_file.writestr(f"{title}.html", html_content)
+        zip_buffer.seek(0)
+        return zip_buffer
+    elif type == "pdf":
+        zip_buffer_pdf = io.BytesIO()
+        with zipfile.ZipFile(zip_buffer_pdf, 'w', zipfile.ZIP_DEFLATED) as zip_file:
+            for title, fig in plot_dict.items():
+                # Convert Plotly figure to PDF
+                pdf_bytes = pio.to_image(fig, format="pdf")
+                # Write PDF to ZIP file
+                zip_file.writestr(f"{title}.pdf", pdf_bytes)
+        zip_buffer_pdf.seek(0)
+        return zip_buffer_pdf
+    elif type == "png":
+        zip_buffer_png = io.BytesIO()
+        with zipfile.ZipFile(zip_buffer_png, 'w', zipfile.ZIP_DEFLATED) as zip_file:
+            for title, fig in plot_dict.items():
+                # Convert Plotly figure to PNG
+                png_bytes = pio.to_image(fig, format="png", engine='orca')
+                # Write PNG to ZIP file
+                zip_file.writestr(f"{title}.png", png_bytes)
+        zip_buffer_png.seek(0)    
+        return zip_buffer_png

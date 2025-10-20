@@ -62,8 +62,9 @@ def read_de_table(file):
     if de_df.columns[0] not in ['gene', 'sequence']:
         st.error(f"First column in loaded DE table is expected to be called 'gene' (for miRNA/isomiRs) or 'sequence' (for sncRNA), but detected name of column is {de_df.columns[0]}")
 
-    # Columns common to all comparisons
+    # Columns common to all comparisons -> only valied if sncRNA are being analyzed!
     common_cols = [de_df.columns[0], 'pirna', 'trna', 'snorna', 'srna', 'mrna', 'lncrna', 'MINT_plate', 'baseMean']
+    present_common_cols = [c for c in common_cols if c in de_df.columns]
 
     # Identify comparison-specific columns using regex
     comparison_pattern = re.compile(r'^(stat|pval|padj|logFC)_(.+)$')
@@ -92,10 +93,11 @@ def read_de_table(file):
             print(f"Note: 'stat' column is missing for comparison '{comparison}'.")
 
         # Build list of columns to extract
-        cols_to_extract = common_cols + [
+        cols_to_extract = present_common_cols + [
             f"{metric}_{comparison}" for metric in (['stat'] if has_stat else []) + list(required_metrics)
         ]
-
+        print(de_df)
+        print(cols_to_extract)
         # Create a new dataframe
         comparison_dfs[comparison] = de_df[cols_to_extract].copy()
 
@@ -137,7 +139,7 @@ def render_tab():
     
     with tabB:
         if uploaded_de is not None and uploaded_counts is not None:
-            st.subheader("Heatmap gene selection", divider="grey")
+            st.subheader("Heatmap sequence selection", divider="grey")
 
             col1, col2 = st.columns(2)
             # PRIMARY - select comparison to visualize and normalization type --------------------------
@@ -156,7 +158,7 @@ def render_tab():
             col1, col2 = st.columns(2)
             with col1:
                 logfc_col = [col for col in selected_de.columns if 'logFC' in col]
-                de_logfc = st.text_input("LogFC thresholds", value="0,0")
+                de_logfc = st.text_input("Log2FC thresholds", value="0,0", help="Set MIN,MAX Log2FC thresholds, only sequences with log2FC < MIN and > MAX will be shown. Example: `-1,1` will only show sequences with log2FC < -1 (down-regulated) and log2FC > 1 (up-regulated).")
                 #de_logfc = st.slider("Log2FC",
                 #                     min_value=selected_de[logfc_col].min().min(),
                 #                     max_value=selected_de[logfc_col].max().max(),
@@ -183,7 +185,7 @@ def render_tab():
                 (selected_de[padj_col[0]] < de_padj)]
             st.dataframe(filtered_selected_de)
 
-            st.subheader("Heatmap settings", divider="grey")
+            st.subheader("Heatmap visualization", divider="grey")
 
             col1, col2 = st.columns(2)
             with col1:
@@ -194,7 +196,7 @@ def render_tab():
 
             with col2:
                 gene_names = "" # Initialize variable so that we can pass it to heatmap-creating function even if user does not specify it
-                show_rows = st.toggle("Show gene names", value = False)
+                show_rows = st.toggle("Show MINTplate identifiers / sequences", value = False)
                 show_cols = st.toggle("Show sample names", value = True)
                 color_cond2 = st.text_input("Color for condition 2:", "darkblue")
                 if show_rows:

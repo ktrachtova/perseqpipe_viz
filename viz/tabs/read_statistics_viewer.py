@@ -13,7 +13,7 @@ def render_tab():
     st.title("Reads Statistics Viewer")
 
     # Upload a file
-    uploaded_stats = st.file_uploader("Upload a CSV/TSV file", type=["csv","tsv"], key='stats', help="CSV/TSV file with comma or tab separator. If visualizing PerSeqPIPE results, import file **read_counts_summary.csv** from `all_stats/` folder.")
+    uploaded_stats = st.file_uploader("Upload a CSV/TSV file (**read_counts_summary.csv**)", type=["csv","tsv"], key='stats', help="CSV/TSV file with comma or tab separator. If visualizing PerSeqPIPE results, import file **read_counts_summary.csv** from `all_stats/` folder.")
 
     # Try to render content only if file is uploaded
     if uploaded_stats is not None:
@@ -73,18 +73,24 @@ def render_tab():
             st.subheader("Bar Plots", divider="gray")
 
             # Plots adjustments options
+            with st.container(border = True):
+                col1, col2 = st.columns(2)
+                with col1:
+                    text_bars = st.toggle("Show bar text")
+
+                    # Should some samples be removed from plots?
+                    remove_samples = st.multiselect("Remove sample(s) from plot", default = None, options = list(df_stats['sample']))
+
+                with col2:
+                    sync_y_axis = st.checkbox("Use same y-axis range for all plots", value=False)
+
+            # Colors options
+            colors = {}
             col1, col2 = st.columns(2)
             with col1:
-                text_bars = st.toggle("Show bar text")
-
-                # Colors options
-                colors = {}
                 with st.expander("Color options:", expanded=False):
                     for category in columns_to_use:
                         colors[category] = st.text_input(category, value="DarkTurquoise", key=category+"_color")
-
-            with col2:
-                sync_y_axis = st.checkbox("Use same y-axis range for all plots", value=False)
 
             # Create range if user wants to sync all the plots
             y_axis_range = None
@@ -94,7 +100,7 @@ def render_tab():
                 y_axis_range = [0, max_y]
         
             for category in columns_to_use:
-                fig = utils.plot_bar_chart(df_stats, category, colors[category], y_axis_range, columns_to_render, text_bars)
+                fig = utils.plot_bar_chart(df_stats, category, colors[category], y_axis_range, columns_to_render, text_bars, remove_samples)
                 st.plotly_chart(fig)
 
                 buffer = io.StringIO()
@@ -102,8 +108,18 @@ def render_tab():
                 html_bytes = buffer.getvalue().encode()
                 barplots_html[category] = html_bytes
                 barplots_pdf[category] = fig
-            
-            utils.download_barplots(barplots_html, barplots_pdf, "barplots")
+
+            zip_html = utils.generate_zip(barplots_html, "html")
+            col1, col2, col3 = st.columns(3)
+            with col2:
+                st.download_button(
+                    label="Download plots",
+                    data=zip_html,
+                    file_name="barplots_html.zip",
+                    mime="application/zip",
+                    use_container_width=True,
+                    key="barplots_download"
+                )
 
         if "Pie Charts" in plot_options:
 
@@ -143,4 +159,19 @@ def render_tab():
                 pieplots_html[sample_name] = html_bytes
                 pieplots_pdf[sample_name] = fig
 
-            utils.download_barplots(pieplots_html, pieplots_pdf, "pieplots")
+            zip_html = utils.generate_zip(pieplots_html, "html")
+                #zip_pdf = utils.generate_zip(barplots_pdf, "pdf")
+                #zip_png = utils.generate_zip(barplots_pdf, "png")
+
+            # Single download button for all HTML barplots
+            col1, col2, col3 = st.columns(3)
+            with col2:
+                st.download_button(
+                    label="Download plots",
+                    data=zip_html,
+                    file_name="pieplots_html.zip",
+                    mime="application/zip",
+                    use_container_width=True,
+                    key="pieplots_download"
+                )
+            #utils.download_barplots(pieplots_html, pieplots_pdf, "pieplots")

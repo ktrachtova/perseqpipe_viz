@@ -15,7 +15,7 @@ def render_tab():
     )
 
     # File uploader
-    uploaded_file = st.file_uploader("Upload a TSV file", type=["tsv"], help = "TSV tab-separated file with columns: sequence, expression, pirna, trna, snorna, srna, mrna, lncrna, genome_alignments, MINT_plate. If using PerSeqPIPE locate files with `.short_rna_counts.tsv` suffix in `quantification/` output folder and use these.")
+    uploaded_file = st.file_uploader("Upload a TSV file (**.short_rna_counts.tsv**)", type=["tsv"], help = "TSV tab-separated file with columns: sequence, expression, pirna, trna, snorna, srna, mrna, lncrna, genome_alignments, MINT_plate. If using PerSeqPIPE locate files with `.short_rna_counts.tsv` suffix in `quantification/` output folder and use these.")
         
     if uploaded_file is not None:
 
@@ -74,7 +74,7 @@ def render_tab():
 
         with col2:
             # Global gene name filter (searches all columns)
-            gene_filter = st.text_input("Filter by gene name:", "", help = "Filter table by gene name, can be with or without the loci sffuxi _loc{x}.")
+            gene_filter = st.text_input("Filter by feature name:", "", help = "Filter table by assigned feature name, example `URS00000CFF4A_9606`")
 
         # Check if 'exclusive' is selected
         is_exclusive = 'exclusive' in selected_columns
