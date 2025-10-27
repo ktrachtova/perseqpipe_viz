@@ -14,13 +14,14 @@ Provides visualization of the read counts summary CSV file created by the PerSeq
 
 ### Reads Statistics Visualization
 
-Currently 2 different plots to visualize number of reads / % of reads passing each preprocessing step are available:
+Currently 2 different plots to visualize number of reads and percentage of reads passing each preprocessing step are available:
+
 * **barplot** of both number of reads and % passing each preprocessing and quantification step
 * **pieplot** showing % of reads in after each preprocessing and quantification step for individual samples
 
-For **barplots**, user can adjust several features such as bar labels, setting identical y-axis range for all plot or changing colors for preprocessing steps. It is also possible to remove specific sample(s) from barplots.
+For **barplots**, user can adjust several features such as bar labels, setting identical y-axis range for all plots or changing colors for preprocessing steps. It is also possible to remove specific sample(s) from barplots.
 
-For **pieplots** user can change color palette used and remove specific step from a pieplot. To remove specific step just click on it in the pieplot legend and all percentages shown will be automatically adjusted.
+For **pieplots** user can change color palette and remove specific step(s) from the pieplot. To remove specific step just click on it in the pieplot legend and all percentages shown will be automatically adjusted.
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="images/reads_statistics_viewer/barplots.png">
@@ -30,11 +31,12 @@ For **pieplots** user can change color palette used and remove specific step fro
 
 ### Downloading plots
 
-All plots currently viewed (and any adjustments made by user) can be downloaded either individually (top right corner of each plot) or in a batch using buttons at the bottom of the Reads Statistics Viewer section. Currently supported formats are PNG, PDF and HTML. 
+All plots currently viewed (and any adjustments made by user) can be downloaded either individually (top right corner of each plot) or in a batch using buttons at the bottom of the Reads Statistics Viewer section. Currently supported format for batch download of all visualized plots is HTML.
 
 ## sncRNA Counts Viewer
 
-This tab supports exploration of sncRNA counts produced by SNCRNA_QUANTICATION module of [PerSeqPIPE](https://github.com/ktrachtova/perseqpipe) for individual samples and includes following filtering:
+This tab supports exploration of sncRNA counts produced by SNCRNA_QUANTICATION module of [PerSeqPIPE](https://github.com/ktrachtova/perseqpipe/blob/main/docs/module_description.md#module-5%EF%B8%8F%E2%83%A3-other-sncrna-quantification) for individual samples and includes following filtering:
+
 * selecting specific sncRNA cathegory
 * selecting sequences of specific length
 * selecting sequences based on number of genomic alignments
@@ -42,11 +44,11 @@ This tab supports exploration of sncRNA counts produced by SNCRNA_QUANTICATION m
 * filtering based on sequence
 * filtering based on assigned feature(s)
 
-Additionally, it is possible to obtain list of unique loci-specific gene names as well as list of unique gene names for a set of currently viewe sequences. 
+Additionally, it is possible to obtain list of unique loci-specific gene names as well as list of unique gene names for a set of currently viewed sequences. 
 
 ### Loci-specific names
 
-If a specific RNA can be aligned to multiple loci in genome (like many tRNA and piRNA), such gene/transcript name is given a suffix `_loc{x}` in the custom sncRNA GTF file used for sncRNA quantification by PerSeqPIPE. For more information, please refer to section [sncRNA GTF file format specification]() section of PerSeqPIPE documentation. 
+If a specific RNA can be aligned to multiple loci in genome (like many tRNA and piRNA), such gene/transcript name has suffix `_loc{x}` in the custom sncRNA GTF file used for sncRNA quantification by PerSeqPIPE. For more information, please refer to section [sncRNA GTF file format specification](https://github.com/ktrachtova/perseqpipe/blob/main/docs/outputs.md#sncrna-quantification-output-file-format) section of PerSeqPIPE documentation. 
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="images/sncrna_counts_viewer/sncrna_counts_viewer.png">
@@ -58,12 +60,13 @@ If a specific RNA can be aligned to multiple loci in genome (like many tRNA and 
 
 The DE Analysis Viewer required following files:
 
+
 * DE statistics table (`DE_analysis_sncrna_results.tsv` or `DE_analysis_mirna|isomirs_results.tsv` produced by DE_ANALYSIS module of PerSeqPIPE)
 * table with counts (`DE_analysis_sncrna_counts.tsv` or `DE_analysis_mirna|isomirs_counts.tsv`).
 
 Please see [PerSeqPIPE documentation](https://github.com/ktrachtova/perseqpipe/blob/main/docs/de_analysis.md#output-files) decribing these specific files and their format.
 
-The DE Analysis Viewer has 2 separate sub-tabs - for visualization of PCA plot and heatmap. 
+The DE Analysis Viewer has 2 separate subtabs showing PCA plot and heatmap. 
 
 ### PCA plot
 

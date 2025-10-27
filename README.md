@@ -19,7 +19,7 @@ Current version of PerSeqPIPE VIZ contains 3 sections, each specializing on inte
 
 ### Quick start (local environment)
 
-First, downlaod the repository code locally. 
+First downlaod the repository code locally. 
 ```
 git pull https://github.com/ktrachtova/perseqpipe_viz.git
 ```
@@ -46,7 +46,7 @@ docker pull ...
 docker run -p 8501:8501 perseqpipe_viz:arm64-1.0
 ```
 
-This will start the PerSeqPIPE VIZ at `http://0.0.0.0:8501` (when running through docker, the web browser will not automatically open, must be started manually by user). The application will be available after this message appears in the terminal:
+This will start the PerSeqPIPE VIZ at `http://0.0.0.0:8501` (when running through docker, the web browser will not automatically open, it must be started by the user). The application will be available after this message appears in the terminal:
 ```
 You can now view your Streamlit app in your browser.
 
@@ -58,7 +58,7 @@ The port `8501` can be changed to whichever port is available using variable `PO
 docker run -e PORT=8502 -p 8502:8502 perseqpipe_viz:latest
 ```
 
-## Inputs
+## 📥 Inputs
 
 Inputs for the PerSeqPIPE VIZ are various files produced by the PerSeqPIPE workflow.
 
@@ -68,9 +68,7 @@ Inputs for the PerSeqPIPE VIZ are various files produced by the PerSeqPIPE workf
 | sncRNA Counts Viewer | `{sample}.genome.short_rna_counts.tsv` |
 | DE Analysis Viewer   | `DE_analysis_[isomirs\|mirna\|sncrna]_results.tsv`, `DE_analysis_[isomirs\|mirna\|sncrna]_counts.tsv` |
 
-For description of each input file, please refer to section documentation in [PerSeqPIPE VIZ Sections](docs/sections.md).
-
-
+For description of each input file, please got to [PerSeqPIPE VIZ Sections](docs/sections.md).
 
 ### Providing inputs from different tools
 
