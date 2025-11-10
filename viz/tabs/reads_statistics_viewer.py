@@ -117,7 +117,7 @@ def render_tab():
                     data=zip_html,
                     file_name="barplots_html.zip",
                     mime="application/zip",
-                    use_container_width=True,
+                    width='stretch',
                     key="barplots_download"
                 )
 
@@ -160,8 +160,6 @@ def render_tab():
                 pieplots_pdf[sample_name] = fig
 
             zip_html = utils.generate_zip(pieplots_html, "html")
-                #zip_pdf = utils.generate_zip(barplots_pdf, "pdf")
-                #zip_png = utils.generate_zip(barplots_pdf, "png")
 
             # Single download button for all HTML barplots
             col1, col2, col3 = st.columns(3)
@@ -171,7 +169,6 @@ def render_tab():
                     data=zip_html,
                     file_name="pieplots_html.zip",
                     mime="application/zip",
-                    use_container_width=True,
+                    width='stretch',
                     key="pieplots_download"
                 )
-            #utils.download_barplots(pieplots_html, pieplots_pdf, "pieplots")

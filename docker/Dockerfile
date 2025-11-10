@@ -5,7 +5,7 @@ FROM python:3.10-slim
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 # Default Streamlit port
-ENV PORT=8501
+ENV PORT=8502
 
 # Install system dependencies
 RUN apt-get update && apt-get install -y --no-install-recommends \
@@ -28,7 +28,9 @@ RUN pip install --no-cache-dir \
     seaborn==0.13.2 \
     matplotlib==3.9.4 \
     scikit-learn==1.6.1 \
-    kaleido==0.2.1
+    kaleido==0.2.1 \
+    biopython==1.84 \
+    pysam==0.22.1
 
 # Copy the app code into the container
 COPY .. .

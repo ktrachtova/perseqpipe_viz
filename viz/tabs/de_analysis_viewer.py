@@ -5,7 +5,6 @@ from viz import settings
 import re
 
 
-
 ALLOWED_COUNTS = ['raw', 'norm', 'vst']
 
 
@@ -82,6 +81,7 @@ def read_de_table(file):
     comparison_dfs = {}
     for comparison, metrics in comparison_dict.items():
         required_metrics = {'pval', 'padj', 'logFC'}
+
         missing = required_metrics - metrics
 
         if missing:
@@ -96,8 +96,6 @@ def read_de_table(file):
         cols_to_extract = present_common_cols + [
             f"{metric}_{comparison}" for metric in (['stat'] if has_stat else []) + list(required_metrics)
         ]
-        print(de_df)
-        print(cols_to_extract)
         # Create a new dataframe
         comparison_dfs[comparison] = de_df[cols_to_extract].copy()
 
@@ -133,7 +131,7 @@ def render_tab():
             if selected_counts in ['norm', 'vst']:
                 expression_df = norm_dfs[selected_counts]
                 pca_fig = utils.plot_pca(expression_df, metadata_df, gene_column='gene')
-                st.plotly_chart(pca_fig, use_container_width=False)
+                st.plotly_chart(pca_fig)
             else:
                 st.error("PCA cannot be performed on raw counts. Please select 'norm' or 'vst'.")
     
@@ -153,23 +151,16 @@ def render_tab():
             # Prepare table with counts based on selected normalization type
             selected_counts_df = norm_dfs[selected_counts_de]
 
-
             # SECONDARY - select counts and filter genes based on baseMean, padj, pvalu or logFC -------
             col1, col2 = st.columns(2)
             with col1:
                 logfc_col = [col for col in selected_de.columns if 'logFC' in col]
                 de_logfc = st.text_input("Log2FC thresholds", value="0,0", help="Set MIN,MAX Log2FC thresholds, only sequences with log2FC < MIN and > MAX will be shown. Example: `-1,1` will only show sequences with log2FC < -1 (down-regulated) and log2FC > 1 (up-regulated).")
-                #de_logfc = st.slider("Log2FC",
-                #                     min_value=selected_de[logfc_col].min().min(),
-                #                     max_value=selected_de[logfc_col].max().max(),
-                #                     value=(selected_de[logfc_col].min().min(), selected_de[logfc_col].max().max()))
-
                 pval_col = [col for col in selected_de.columns if 'pval' in col]
                 de_pval = st.slider("P-value", min_value=selected_de[pval_col].min().min(), max_value=1.0, value=1.0)
             
             with col2:
                 de_basemean = st.text_input("Min baseMean", value=0.0)
-
                 padj_col = [col for col in selected_de.columns if 'padj' in col]
                 de_padj = st.slider("Adjusted P-value", min_value=selected_de[padj_col].min().min(), max_value=1.0, value=1.0)
 
@@ -183,6 +174,7 @@ def render_tab():
                 (selected_de["baseMean"] >= float(de_basemean)) &
                 (selected_de[pval_col[0]] < de_pval) &
                 (selected_de[padj_col[0]] < de_padj)]
+  
             st.dataframe(filtered_selected_de)
 
             st.subheader("Heatmap visualization", divider="grey")
@@ -204,24 +196,9 @@ def render_tab():
 
             # Get list of compared conditions ['cond1','cond2']
             de_conditions = selected_comparison.split("_vs_")
-            
             metadata_df_selected = metadata_df[metadata_df['condition'].isin(de_conditions)]
             metadata_df_selected = metadata_df_selected[metadata_df_selected['normalization'] == selected_counts_de]
-            
+
             heatmap_fig = utils.create_heatmap(selected_counts_df, metadata_df_selected, filtered_selected_de, de_conditions, cluter_rows, cluster_cols, show_rows, show_cols, color_cond1, color_cond2, heatmap_palette, gene_names)
 
             st.pyplot(heatmap_fig.fig)
-            #selected_df = comparison_dfs[selected_comparison]
-            #selected_counts_df = norm_dfs[selected_counts_de]
-            #num_genes = 10#
-
-            #filtered_design_df = metadata_df[metadata_df['condition'].isin([selected_comparison.split("_")[0], selected_comparison.split("_")[2]])]
-            #filtered_design_df = filtered_design_df[filtered_design_df['normalization'] == selected_counts_de]
-
-            #top_genes = selected_df['gene'].head(num_genes).tolist()
-
-            #heatmap_data = selected_counts_df[selected_counts_df["gene"].isin(top_genes)]
-
-
-            #heatmap_fig = create_heatmap(norm_counts, design_df, de_results_df, de_conditions, num_genes, cluter_rows, cluter_cols, show_rows, show_cols, color_cond1, color_cond2):
-

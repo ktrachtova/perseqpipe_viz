@@ -1,5 +1,5 @@
 import streamlit as st
-from viz.tabs import read_statistics_viewer, sncrna_counts_viewer, de_analysis_viewer
+from viz.tabs import reads_statistics_viewer, sncrna_counts_viewer, de_analysis_viewer, reads_coordinates_extraction
 
 
 def main():
@@ -20,16 +20,19 @@ def main():
     )
     st.image("docs/images/perseqpipe_viz_logo_dark.png")
 
-    tab1, tab2, tab3 = st.tabs(["Read Statistics Viewer", "sncRNA Counts Viewer", "DE Analysis Viewer"])
+    tab1, tab2, tab3, tab4 = st.tabs(["Reads Statistics Viewer", "sncRNA Counts Viewer", "DE Analysis Viewer", "Reads Coordinates Extraction"])
 
     with tab1:
-        read_statistics_viewer.render_tab()
+        reads_statistics_viewer.render_tab()
     
     with tab2:
         sncrna_counts_viewer.render_tab()
 
     with tab3:
         de_analysis_viewer.render_tab()
+    
+    with tab4:
+        reads_coordinates_extraction.render_tab()
 
 
 if __name__ == "__main__":

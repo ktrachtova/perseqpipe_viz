@@ -333,3 +333,12 @@ def generate_zip(plot_dict, type):
                 zip_file.writestr(f"{title}.png", png_bytes)
         zip_buffer_png.seek(0)    
         return zip_buffer_png
+
+
+def is_valid_dna_sequence(seq: str) -> bool:
+    """
+    Return True if the sequence contains only valid DNA bases (A, C, G, T).
+    Case-insensitive.
+    """
+    valid_bases = {"A", "C", "G", "T"}
+    return all(base in valid_bases for base in seq.upper())

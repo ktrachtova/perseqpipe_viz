@@ -10,10 +10,13 @@
 
 PerSeqPIPE VIZ is a Streamlit application for visualization of results from [PerSeqPIPE pipeline](https://github.com/ktrachtova/perseqpipe). 
 
-Current version of PerSeqPIPE VIZ contains 3 sections, each specializing on interactive exploration / visualization of data produced by PerSeqPIPE:
+Current version of PerSeqPIPE VIZ contains 4 sections, each specializing on interactive exploration / visualization of data produced by PerSeqPIPE:
 1. **Reads Counts Viewer**: Exploration and visualization of read statistics after each step in of preprocessing in PerSeqPIPE workflow
 2. **sncRNA Counts Viewer**: Exploration of sequence-centric results from PerSeqPIPE workflow
 3. **DE Analysis Viewer**: Visualization of results from Differential Expression analysis, including PCA plot and interactive heatmaps
+4. **Reads Coordinate Extraction**: Extract information about specific read sequence, such as coordinates for visualization in [IGV tool](https://igv.org/), mismatches, strand etc.
+
+For more information about each section, go to [Sections documentation](docs/sections.md).
 
 ## 💻 Usage
 
@@ -39,23 +42,23 @@ If you do not have or do not want to install all prerequisites you can also use 
 ```
 # For linux/amd64 infrastructure
 docker pull ...
-docker run -p 8501:8501 perseqpipe_viz:amd64-1.0
+docker run -p 8502:8502 perseqpipe_viz:amd64-1.0
 
 # For arm infrastructure
 docker pull ...
-docker run -p 8501:8501 perseqpipe_viz:arm64-1.0
+docker run -p 8502:8502 perseqpipe_viz:arm64-1.0
 ```
 
-This will start the PerSeqPIPE VIZ at `http://0.0.0.0:8501` (when running through docker, the web browser will not automatically open, it must be started by the user). The application will be available after this message appears in the terminal:
+This will start the PerSeqPIPE VIZ at `http://0.0.0.0:8502` (when running through docker, the web browser will not automatically open, it must be started by the user). The application will be available after this message appears in the terminal:
 ```
 You can now view your Streamlit app in your browser.
 
-URL: http://0.0.0.0:8501
+URL: http://0.0.0.0:8502
 ```
 
-The port `8501` can be changed to whichever port is available using variable `PORT`.
+The port `8502` can be changed to whichever port is available using variable `PORT`.
 ```
-docker run -e PORT=8502 -p 8502:8502 perseqpipe_viz:latest
+docker run -e PORT=8501 -p 8501:8501 perseqpipe_viz:latest
 ```
 
 ## 📥 Inputs
@@ -67,6 +70,7 @@ Inputs for the PerSeqPIPE VIZ are various files produced by the PerSeqPIPE workf
 | Reads Counts Viewer  | `read_counts_summary.csv`              |
 | sncRNA Counts Viewer | `{sample}.genome.short_rna_counts.tsv` |
 | DE Analysis Viewer   | `DE_analysis_[isomirs\|mirna\|sncrna]_results.tsv`, `DE_analysis_[isomirs\|mirna\|sncrna]_counts.tsv` |
+| Reads Coordinate Extraction | `{sample}.genome.Aligned.sortedByCoord.out.bam` |
 
 For description of each input file, please got to [PerSeqPIPE VIZ Sections](docs/sections.md).
 
