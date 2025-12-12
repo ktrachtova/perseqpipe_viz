@@ -60,7 +60,7 @@ URL: http://0.0.0.0:8502
 
 The port `8502` can be changed to whichever port is available using variable `PORT`.
 ```
-docker run -e PORT=8501 -p 8501:8501 perseqpipe_viz:latest
+docker run -e PORT=8501 -p 8501:8501 ktrachtok/perseqpipe_viz:arm64-1.0
 ```
 
 ## 📥 Inputs
