@@ -2,9 +2,15 @@
 
 ## Reads Statistics Viewer
 
-### Reads table
+### Input
 
-Provides visualization of the read counts summary CSV file created by the PerSeqPIPE workflow (`{project_name}/all_stats/read_counts_summary.csv`). This file contains summary for number of reads passing each preprocessing and quantification step. For description of individual columns from the `read_counts_summary.csv` please go to documentation of PerSeqPIPE [here](https://github.com/ktrachtova/perseqpipe/blob/main/docs/outputs.md#reads-statistics).
+| input file                | location in PerSeqPIPE results |
+|---------------------------|--------------------------------|
+| `read_counts_summary.csv` | `{project_name}/all_stats/`    |
+
+### Subsection: Reads table
+
+Provides visualization of the read counts summary CSV file created by the PerSeqPIPE workflow called `read_counts_summary.csv`. This file contains summary for number of reads passing each preprocessing and quantification step. For description of individual columns from the `read_counts_summary.csv` please go to documentation of PerSeqPIPE [here](https://github.com/ktrachtova/perseqpipe/blob/main/docs/outputs.md#reads-statistics).
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="images/reads_statistics_viewer/reads_table.png">
@@ -12,9 +18,9 @@ Provides visualization of the read counts summary CSV file created by the PerSeq
        style="width:600px; margin-bottom:10px;">
 </picture>
 
-### Reads Statistics Visualization
+### Subsection: Reads Statistics Visualization
 
-Currently 2 different plots to visualize number of reads and percentage of reads passing each preprocessing step are available:
+Currently supported plot types:
 
 * **barplot** of both number of reads and % passing each preprocessing and quantification step
 * **pieplot** showing % of reads in after each preprocessing and quantification step for individual samples
@@ -31,9 +37,18 @@ For **pieplots** user can change color palette and remove specific step(s) from 
 
 ### Downloading plots
 
-All plots currently viewed (and any adjustments made by user) can be downloaded either individually (top right corner of each plot) or in a batch using buttons at the bottom of the Reads Statistics Viewer section. Currently supported format for batch download of all visualized plots is HTML.
+All plots currently viewed (and any adjustments made by user) can be downloaded either individually (top right corner of each plot) or in a batch using button at the bottom of the Reads Statistics Viewer section. Currently supported format for batch download of all visualized plots is HTML.
 
 ## sncRNA Counts Viewer
+
+### Input
+
+| input file                             | location in PerSeqPIPE results                     |
+|----------------------------------------|----------------------------------------------------|
+| `{sample}.genome.short_rna_counts.tsv` | `{project_name}/rna_quantification/genome/counts/` |
+
+
+### Overview
 
 This tab supports exploration of sncRNA counts produced by SNCRNA_QUANTICATION module of [PerSeqPIPE](https://github.com/ktrachtova/perseqpipe/blob/main/docs/module_description.md#module-5%EF%B8%8F%E2%83%A3-other-sncrna-quantification) for individual samples and includes following filtering:
 
@@ -58,19 +73,35 @@ If a specific RNA can be aligned to multiple loci in genome (like many tRNA and 
 
 ## DE Analysis Viewer
 
-The DE Analysis Viewer required following files:
+### Input
 
+| input file                                       | location in PerSeqPIPE results                     |
+|--------------------------------------------------|----------------------------------------------------|
+| `DE_analysis_{sncrna\|mirna\|isomirs}_results.tsv` | `{project_name}/de_analysis/sncrna` or `{project_name}/de_analysis/mnirna_isomirs` |
+| `DE_analysis_{sncrna\|mirna\|isomirs}_counts.tsv` | `{project_name}/de_analysis/sncrna` or `{project_name}/de_analysis/mnirna_isomirs` |
+
+### Overview
+
+The DE Analysis Viewer required following files:
 
 * DE statistics table (`DE_analysis_sncrna_results.tsv` or `DE_analysis_mirna|isomirs_results.tsv` produced by DE_ANALYSIS module of PerSeqPIPE)
 * table with counts (`DE_analysis_sncrna_counts.tsv` or `DE_analysis_mirna|isomirs_counts.tsv`).
 
 Please see [PerSeqPIPE documentation](https://github.com/ktrachtova/perseqpipe/blob/main/docs/de_analysis.md#output-files) decribing these specific files and their format.
 
-The DE Analysis Viewer has 2 separate subtabs showing PCA plot and heatmap. 
+The DE Analysis Viewer has 2 separate subtabs showing interactive PCA plot and heatmap.
 
 ### PCA plot
 
-PCA plot can be created from **VST** or **DESeq2-normalized counts**. 
+By default, a table showing raw counts will be rendered after the input files are uploaded. 
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="images/de_analysis_viewer/pca_plot_table.png">
+  <img src="images/de_analysis_viewer/pca_plot_table.png" alt="Reads table"
+       style="width:600px; margin-bottom:20px;">
+</picture>
+
+PCA plot will be renred if **VST** or **DESeq2-normalized counts** are selected. User can adjust color for conditions, point size, font size for both axes, tick labels, legen and title. 
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="images/de_analysis_viewer/pca_plot.png">
@@ -80,9 +111,15 @@ PCA plot can be created from **VST** or **DESeq2-normalized counts**.
 
 ### Heatmap
 
-First section **Heatmap sequence selection** allow users to filter genes/sequences for heatmap based on log2FC thresholds, baseMean, p-value and adjusted p-value. User can also switch between different pairwise comparisons (if more than 2 conditions were present inside the design file for DE Analysis) and between different normalization types (raw, VST, DESeq2-normalized).
+First subsection **Heatmap sequence selection** allow users to filter genes/sequences for heatmap based on **log2FC thresholds**, **baseMean**, **p-value** and **adjusted p-value**. User can also switch between different pairwise comparisons (if more than 2 conditions were present inside the design file for DE Analysis) and between different normalization types (raw, VST, DESeq2-normalized).
 
-Sequences selected through **Heatmap sequence selection** section are visualize in the next section **Heatmap visualization**. Here, user can adjust clustering of both rows and columns as well as decide between showing MINTplate identifiers or sequences as row names for heatmap. 
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="images/de_analysis_viewer/heatmap_seq_selection.png">
+  <img src="images/de_analysis_viewer/heatmap_seq_selection.png" alt="Reads table"
+       style="width:600px; margin-bottom:20px;">
+</picture>
+
+Sequences selected through **Heatmap sequence selection** subsection are visualize in **Heatmap appearance** subsection. Here, user can adjust clustering of both rows and columns, whether to show row/column labels, their font size etc. For row labels, if miRNA or isomiRs results are being visualized then their names will be automatically shown. For sncRNA sequences, upon clicking on Show row identifiers toggle a new option will appear to select whether to show sequences or MINT plates are row labels. 
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="images/de_analysis_viewer/heatmap.png">
@@ -91,6 +128,14 @@ Sequences selected through **Heatmap sequence selection** section are visualize 
 </picture>
 
 ## Reads Coordinate Extraction
+
+### Input
+
+| input file                                       | location in PerSeqPIPE results                     |
+|--------------------------------------------------|----------------------------------------------------|
+| `{sample}.genome.Aligned.sortedByCoord.out.bam` | `{project_name}/rna_quantification/genome/star_genome` |
+
+### Overview
 
 This tab provides a simple way how to quickly obtain all coordinates of specific quantified sequence. Input is a BAM file generated by PerSeqPIPE workflow (location `{project_name}/rna_quantification/genome/star_genome`) and a specific sequence of interest. Input BAM file will be searched for alignment loci of the specific sequence (on both strands) if there is any. Table summarizing all the found loci as well as a simple scatter plot summarizing on which chromosome can the sequence be found is shown.
 
