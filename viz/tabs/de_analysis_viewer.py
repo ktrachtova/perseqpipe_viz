@@ -56,7 +56,6 @@ def read_counts_table(file):
 def read_de_table(file):
 
     de_df = pd.read_csv(file, sep='\t')
-
     # check 'gene' column present
     if de_df.columns[0] not in ['gene', 'sequence']:
         st.error(f"First column in loaded DE table is expected to be called 'gene' (for miRNA/isomiRs) or 'sequence' (for sncRNA), but detected name of column is {de_df.columns[0]}")
@@ -85,8 +84,13 @@ def read_de_table(file):
         missing = required_metrics - metrics
 
         if missing:
-            print(f"Skipping '{comparison}': missing required columns: {', '.join(missing)}")
-            continue
+            # If other comparison than lrt has missing columns report;
+            # do not report for lrt as we currently do not vidualze overall lrt comparison
+            if comparison != 'lrt':
+                print(f"Skipping '{comparison}': missing required columns: {', '.join(missing)}")
+                continue
+            else:
+                continue
 
         has_stat = 'stat' in metrics
         if not has_stat:
@@ -118,23 +122,119 @@ def render_tab():
 
     if uploaded_de is not None:
         comparison_dfs = read_de_table(uploaded_de)
+        
 
     tabA, tabB =  st.tabs(["PCA plot", "Heatmap"])
 
+    # PCA plot ####################################
+    ###############################################
     with tabA:
+
         if uploaded_counts is not None:
+
             st.subheader("Counts overview", divider="grey")
 
             selected_counts = st.selectbox("Choose normalization type for analysis", options=available_counts)
             st.dataframe(norm_dfs[selected_counts])
 
+            # Show PCA plot only if normalized and not raw counts are selected
             if selected_counts in ['norm', 'vst']:
+
+                # Subset counts to contain only specific normalization
                 expression_df = norm_dfs[selected_counts]
-                pca_fig = utils.plot_pca(expression_df, metadata_df, gene_column='gene')
+
+                # Filter metadata to what you're actually visualizing right now
+                meta_view = metadata_df.loc[metadata_df["normalization"].eq(selected_counts)].copy()
+                
+                # Build N widgets (N = unique conditions in this view)
+                conditions = sorted(meta_view["condition"].dropna().unique().tolist())
+
+                st.subheader("PCA plot appearance", divider="grey")
+
+                col1, col2, col3 = st.columns(3)
+
+                with col1:
+                    point_size = st.number_input(
+                        "Point size",
+                        min_value=2,
+                        max_value=50,
+                        value=15,
+                        step=1,
+                    )
+
+                    legend_font_size = st.number_input(
+                        "Legend font size",
+                        min_value=8,
+                        max_value=30,
+                        value=14,
+                        step=1,
+                    )
+
+                with col2:
+                    axis_label_font_size = st.number_input(
+                        "Axis label font size (PC1 / PC2)",
+                        min_value=8,
+                        max_value=50,
+                        value=16,
+                        step=1,
+                    )
+
+                    title_font_size = st.number_input(
+                        "Title font size",
+                        min_value=10,
+                        max_value=40,
+                        value=20,
+                        step=1,
+                    )
+
+                with col3:
+                    tick_label_font_size = st.number_input(
+                        "Tick label font size",
+                        min_value=6,
+                        max_value=50,
+                        value=12,
+                        step=1,
+                    )
+
+                st.divider()
+    
+                # Persist across reruns + keep separate per normalization (optional but nice)
+                state_key = f"condition_colors_{selected_counts}"
+                if state_key not in st.session_state:
+                    st.session_state[state_key] = {}
+
+                # Ensure defaults exist for all current conditions
+                for i, cond in enumerate(conditions):
+                    st.session_state[state_key].setdefault(cond, settings.PCA_COLOR_OPTIONS[i % len(settings.PCA_COLOR_OPTIONS)])
+
+                # Render text input widgets for each condition
+                cols = st.columns(min(3, max(1, len(conditions))))
+                for i, cond in enumerate(conditions):
+                    with cols[i % len(cols)]:
+                        st.session_state[state_key][cond] = st.text_input(
+                            f"Color for {cond}",
+                            value=st.session_state[state_key][cond],
+                            key=f"{state_key}_color_{cond}",
+                            help="Hex like #1f77b4, or a CSS color name like 'tomato'."
+                        )
+
+                condition_to_color = dict(st.session_state[state_key])
+
+                pca_fig = utils.plot_pca(expression_df,
+                                         metadata_df,
+                                         color_map=condition_to_color,
+                                         point_size=point_size,
+                                         legend_font_size=legend_font_size,
+                                         axis_label_font_size=axis_label_font_size,
+                                         tick_label_font_size=tick_label_font_size,
+                                         title_font_size=title_font_size,
+                                         gene_column='gene')
                 st.plotly_chart(pca_fig)
             else:
                 st.error("PCA cannot be performed on raw counts. Please select 'norm' or 'vst'.")
     
+    # Heatmaps ####################################
+    ###############################################
     with tabB:
         if uploaded_de is not None and uploaded_counts is not None:
             st.subheader("Heatmap sequence selection", divider="grey")
@@ -148,11 +248,17 @@ def render_tab():
 
             # Prepare DE table based on selected comparison
             selected_de = comparison_dfs[selected_comparison]
+            # Check whether miRNA/isomiRs table or sncRNA table is being visualized -> need for heatmap row label options
+            if 'MINT_plate' in selected_de.columns:
+                de_type = 'sncRNA'
+            else:
+                de_type = 'miRNA'
             # Prepare table with counts based on selected normalization type
             selected_counts_df = norm_dfs[selected_counts_de]
 
             # SECONDARY - select counts and filter genes based on baseMean, padj, pvalu or logFC -------
             col1, col2 = st.columns(2)
+
             with col1:
                 logfc_col = [col for col in selected_de.columns if 'logFC' in col]
                 de_logfc = st.text_input("Log2FC thresholds", value="0,0", help="Set MIN,MAX Log2FC thresholds, only sequences with log2FC < MIN and > MAX will be shown. Example: `-1,1` will only show sequences with log2FC < -1 (down-regulated) and log2FC > 1 (up-regulated).")
@@ -177,28 +283,67 @@ def render_tab():
   
             st.dataframe(filtered_selected_de)
 
-            st.subheader("Heatmap visualization", divider="grey")
+            st.subheader("Heatmap appearance", divider="grey")
 
             col1, col2 = st.columns(2)
+
+            # --- sensible defaults for fonts (used when labels are hidden) ---
+            row_label_font_size = 10
+            col_label_font_size = 10
+
             with col1:
                 cluter_rows = st.toggle("Cluster rows", value = False)
-                cluster_cols = st.toggle("Cluster columns", value = True)
-                color_cond1 = st.text_input("Color for condition 1:", "gold")
-                heatmap_palette = st.selectbox("Heatmap palette", options = settings.HEATMAP_COLORS, index = 7)
-
-            with col2:
-                gene_names = "" # Initialize variable so that we can pass it to heatmap-creating function even if user does not specify it
-                show_rows = st.toggle("Show MINTplate identifiers / sequences", value = False)
-                show_cols = st.toggle("Show sample names", value = True)
-                color_cond2 = st.text_input("Color for condition 2:", "darkblue")
+                show_rows = st.toggle("Show row identifiers", value = False, help="Show labels for rows? Either miRNA/isomiR names shown (if miRNA/isomiRs results are being visualized) or, is sncRNA results are being visualized, user will get a choice to show MINT plates or direct sequences as row lables.")
                 if show_rows:
+                    row_label_font_size = st.number_input(
+                        "Row label font size",
+                        min_value=4,
+                        max_value=24,
+                        value=10,
+                        step=1,
+                    )
+            with col2:
+                cluster_cols = st.toggle("Cluster columns", value = True)
+                show_cols = st.toggle("Show column identifiers", value = True)
+                if show_cols:
+                    col_label_font_size = st.number_input(
+                        "Column label font size",
+                        min_value=6,
+                        max_value=30,
+                        value=10,
+                        step=1,
+                    )
+            col1, col2 = st.columns(2)
+            with col1:
+                color_cond1 = st.text_input("Color for condition 1:", "orangered")
+                heatmap_palette = st.selectbox("Heatmap palette", options = settings.HEATMAP_COLORS, index = 7)
+            with col2: 
+                gene_names = "" # Initialize variable so that we can pass it to heatmap-creating function even if user does not specify it
+                color_cond2 = st.text_input("Color for condition 2:", "gold")
+                if show_rows and de_type == 'sncRNA':
                     gene_names = st.selectbox("Row labels", options = ['MINT_plate', 'sequence'], index = 0)
+                elif show_rows and de_type == 'miRNA':
+                    gene_names = 'gene'
 
             # Get list of compared conditions ['cond1','cond2']
             de_conditions = selected_comparison.split("_vs_")
             metadata_df_selected = metadata_df[metadata_df['condition'].isin(de_conditions)]
             metadata_df_selected = metadata_df_selected[metadata_df_selected['normalization'] == selected_counts_de]
 
-            heatmap_fig = utils.create_heatmap(selected_counts_df, metadata_df_selected, filtered_selected_de, de_conditions, cluter_rows, cluster_cols, show_rows, show_cols, color_cond1, color_cond2, heatmap_palette, gene_names)
+            heatmap_fig = utils.create_heatmap(
+                selected_counts_df,
+                metadata_df_selected,
+                filtered_selected_de,
+                de_conditions,
+                cluter_rows,
+                cluster_cols,
+                show_rows,
+                show_cols,
+                color_cond1,
+                color_cond2,
+                heatmap_palette,
+                gene_names,
+                row_label_font_size,
+                col_label_font_size)
 
             st.pyplot(heatmap_fig.fig)

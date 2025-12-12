@@ -4,14 +4,16 @@
 </picture>
 
 [![Streamlit](https://img.shields.io/badge/Streamlit-FF4B4B?style=for-the-badge&logo=Streamlit&logoColor=white)](https://streamlit.io/)
-
+[![Python](https://img.shields.io/badge/Python-3776AB?logo=python&logoColor=fff)](https://www.python.org/)
+[![Docker](https://img.shields.io/badge/Docker-2496ED?logo=docker&logoColor=fff)](https://www.docker.com/)
+[![PerSeqPipe](https://img.shields.io/badge/repo-PerSeqPIPE-20B2AA)](https://github.com/ktrachtova/perseqpipe)
 
 ## ⭐ Introduction
 
 PerSeqPIPE VIZ is a Streamlit application for visualization of results from [PerSeqPIPE pipeline](https://github.com/ktrachtova/perseqpipe). 
 
-Current version of PerSeqPIPE VIZ contains 4 sections, each specializing on interactive exploration / visualization of data produced by PerSeqPIPE:
-1. **Reads Counts Viewer**: Exploration and visualization of read statistics after each step in of preprocessing in PerSeqPIPE workflow
+Current version of PerSeqPIPE VIZ has 4 sections, each specializing on interactive exploration / visualization of specific data produced by PerSeqPIPE:
+1. **Reads Counts Viewer**: Exploration and visualization of read statistics after each step of preprocessing in PerSeqPIPE workflow
 2. **sncRNA Counts Viewer**: Exploration of sequence-centric results from PerSeqPIPE workflow
 3. **DE Analysis Viewer**: Visualization of results from Differential Expression analysis, including PCA plot and interactive heatmaps
 4. **Reads Coordinate Extraction**: Extract information about specific read sequence, such as coordinates for visualization in [IGV tool](https://igv.org/), mismatches, strand etc.
@@ -22,7 +24,7 @@ For more information about each section, go to [Sections documentation](docs/sec
 
 ### Quick start (local environment)
 
-First downlaod the repository code locally. 
+First download the repository code locally. 
 ```
 git pull https://github.com/ktrachtova/perseqpipe_viz.git
 ```
@@ -41,12 +43,12 @@ If you do not have or do not want to install all prerequisites you can also use 
 
 ```
 # For linux/amd64 infrastructure
-docker pull ...
-docker run -p 8502:8502 perseqpipe_viz:amd64-1.0
+docker pull ktrachtok/perseqpipe_viz:amd64-1.0
+docker run -p 8502:8502 ktrachtok/perseqpipe_viz:amd64-1.0
 
 # For arm infrastructure
-docker pull ...
-docker run -p 8502:8502 perseqpipe_viz:arm64-1.0
+docker pull ktrachtok/perseqpipe_viz:arm64-1.0
+docker run -p 8502:8502 ktrachtok/perseqpipe_viz:arm64-1.0
 ```
 
 This will start the PerSeqPIPE VIZ at `http://0.0.0.0:8502` (when running through docker, the web browser will not automatically open, it must be started by the user). The application will be available after this message appears in the terminal:

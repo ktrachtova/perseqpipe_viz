@@ -126,7 +126,21 @@ def get_unique_gene_names(df):
     return unique_genes_df
 
 
-def create_heatmap(norm_counts, design_df, de_results_df, de_conditions, cluter_rows, cluter_cols, show_rows, show_cols, color_cond1, color_cond2, heatmap_palette, gene_names):
+def create_heatmap(norm_counts,
+                   design_df,
+                   de_results_df,
+                   de_conditions,
+                   cluter_rows,
+                   cluter_cols,
+                   show_rows,
+                   show_cols,
+                   color_cond1,
+                   color_cond2,
+                   heatmap_palette,
+                   gene_names,
+                   row_label_font_size,
+                   col_label_font_size
+                   ):
     #filtered_design_df = design_df[design_df['condition'].isin(de_conditions)]
     # Select top variable genes
     norm_counts_filtered = norm_counts[["gene"] + list(design_df['column'])]
@@ -150,6 +164,8 @@ def create_heatmap(norm_counts, design_df, de_results_df, de_conditions, cluter_
         design_df.set_index('column')['condition'].map(lut),
         columns=['condition']
     )
+    col_colors.columns = [""]  # remove "condition" label shown beside annotation row
+
     heatmap_data = heatmap_data.reset_index(drop=True).set_index("gene")
     # Z-score scaling across rows (genes) like `scale="row"`
     scaler = StandardScaler()
@@ -172,10 +188,30 @@ def create_heatmap(norm_counts, design_df, de_results_df, de_conditions, cluter_
         yticklabels=show_rows
     )
 
+    # Remove the "condition" label AND the little connector/tick line on the col_colors strip
+    if hasattr(g, "ax_col_colors") and g.ax_col_colors is not None:
+        g.ax_col_colors.set_ylabel("")                      # no label
+        g.ax_col_colors.set_yticks([])                      # remove tick positions
+        g.ax_col_colors.set_yticklabels([])                 # remove tick text
+        g.ax_col_colors.tick_params(left=False, labelleft=False)  # remove tick marks
+        
+    # Remove heatmap y-axis label ("gene")
+    g.ax_heatmap.set_ylabel("")
+
     # Is row names enabled, rotate them so they are horizontal not vertical
     if show_rows:
-        g.ax_heatmap.set_yticklabels(g.ax_heatmap.get_yticklabels(), rotation=0)
+        g.ax_heatmap.set_yticklabels(
+            g.ax_heatmap.get_yticklabels(),
+            fontsize=row_label_font_size,
+            rotation=0,  # keep horizontal
+        )
 
+    if show_cols:
+        g.ax_heatmap.set_xticklabels(
+            g.ax_heatmap.get_xticklabels(),
+            fontsize=col_label_font_size,
+            rotation=90,
+        )
 
     if g.ax_col_dendrogram.legend_:
         g.ax_col_dendrogram.legend_.remove()
@@ -259,7 +295,16 @@ def create_boxplot(plot_df, selected_gene, condition_colors):
     return fig, ax
 
 
-def plot_pca(expression_df: pd.DataFrame, metadata_df: pd.DataFrame, gene_column: str = "gene") -> None:
+def plot_pca(
+        expression_df: pd.DataFrame,
+        metadata_df: pd.DataFrame,
+        color_map: dict,
+        point_size: int,
+        legend_font_size: int,
+        axis_label_font_size: int,
+        tick_label_font_size: int,
+        title_font_size: int,
+        gene_column: str = "gene") -> None:
     """
     Plot an interactive PCA using Plotly based on a normalized expression DataFrame.
 
@@ -267,6 +312,7 @@ def plot_pca(expression_df: pd.DataFrame, metadata_df: pd.DataFrame, gene_column
     - expression_df: DataFrame with genes as rows and sample columns, including the gene identifier column
     - metadata_df: DataFrame with columns: ['column', 'sample', 'normalization', 'condition']
     - gene_column: Name of the gene identifier column (default: 'gene')
+    - color_map: Optional dict mapping condition -> color name (e.g. {"MM": "royalblue"})
     """
     # Transpose and prepare expression matrix
     expr = expression_df.set_index(gene_column).T  # samples as rows
@@ -288,18 +334,51 @@ def plot_pca(expression_df: pd.DataFrame, metadata_df: pd.DataFrame, gene_column
     pca_df["condition"] = metadata["condition"].values
     var1, var2 = pca.explained_variance_ratio_[:2] * 100
 
+    # Ensure we only pass mappings for conditions present in this plot (avoids surprises)
+    if color_map:
+        present_conditions = set(pca_df["condition"].dropna().unique().tolist())
+        color_map = {k: v for k, v in color_map.items() if k in present_conditions}
+
     # Plot using Plotly
     fig = px.scatter(
         pca_df,
         x="PC1",
         y="PC2",
         color="condition",
+        color_discrete_map=color_map or {},   # NEW: this applies user-chosen colors
         hover_name="sample",
         title=f"PCA of normalized counts (PC1: {var1:.1f}%, PC2: {var2:.1f}%)",
         width=900,
         height=600
     )
-    fig.update_traces(marker=dict(size=10, line=dict(width=1)))
+
+    fig.update_traces(
+        marker=dict(
+            size=point_size,
+            line=dict(width=0)   # no border
+        )
+    )
+
+    # Axis labels + tick font sizes
+    fig.update_layout(
+        title=dict(
+            x=0.5,                     # center horizontally
+            xanchor="center",
+            font=dict(size=title_font_size),
+        ),
+        xaxis=dict(
+            title_font=dict(size=axis_label_font_size),
+            tickfont=dict(size=tick_label_font_size),
+        ),
+        yaxis=dict(
+            title_font=dict(size=axis_label_font_size),
+            tickfont=dict(size=tick_label_font_size),
+        ),
+        legend=dict(
+            title_text="",                  # <- removes "condition"
+            font=dict(size=legend_font_size)   # NEW
+        )
+    )
 
     return fig
 

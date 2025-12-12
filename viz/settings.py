@@ -33,3 +33,17 @@ PALLETE_OPTIONS = {
     "Bold": px.colors.qualitative.Bold,
     "Vivid": px.colors.qualitative.Vivid,
 }
+
+# Default colors options for PCA plot
+PCA_COLOR_OPTIONS = [
+    "orangered",
+    "gold",
+    "lightseagreen",
+    "sky",
+    "silver",
+    "teal",
+    "crimson",
+    "olive",
+    "deeppink",
+    "goldenrod"
+]
