@@ -1,6 +1,28 @@
 # PerSeqPIPE VIZ Tabs
 
-## Reads Statistics Viewer
+## Table of Contents
+
+- [PerSeqPIPE VIZ Tabs](#perseqpipe-viz-tabs)
+  - [Reads Statistics Viewer](#1️⃣-reads-statistics-viewer)
+    - [Input](#input)
+    - [Subsection: Reads table](#subsection-reads-table)
+    - [Subsection: Reads Statistics Visualization](#subsection-reads-statistics-visualization)
+    - [Downloading plots](#downloading-plots)
+  - [sncRNA Counts Viewer](#2️⃣-sncrna-counts-viewer)
+    - [Input](#input-1)
+    - [Overview](#overview)
+    - [Loci-specific names](#loci-specific-names)
+  - [DE Analysis Viewer](#3️⃣-de-analysis-viewer)
+    - [Input](#input-2)
+    - [Overview](#overview-1)
+    - [PCA plot](#pca-plot)
+    - [Heatmap](#heatmap)
+  - [Reads Coordinate Extraction](#4️⃣-reads-coordinate-extraction)
+    - [Input](#input-3)
+    - [Overview](#overview-2)
+    - [Example usage](#example-usage)
+
+## 1️⃣ Reads Statistics Viewer
 
 ### Input
 
@@ -8,7 +30,7 @@
 |---------------------------|--------------------------------|
 | `read_counts_summary.csv` | `{project_name}/all_stats/`    |
 
-### Subsection: Reads table
+### Reads table
 
 Provides visualization of the read counts summary CSV file created by the PerSeqPIPE workflow called `read_counts_summary.csv`. This file contains summary for number of reads passing each preprocessing and quantification step. For description of individual columns from the `read_counts_summary.csv` please go to documentation of PerSeqPIPE [here](https://github.com/ktrachtova/perseqpipe/blob/main/docs/outputs.md#reads-statistics).
 
@@ -18,7 +40,7 @@ Provides visualization of the read counts summary CSV file created by the PerSeq
        style="width:600px; margin-bottom:10px;">
 </picture>
 
-### Subsection: Reads Statistics Visualization
+### Reads Statistics Visualization
 
 Currently supported plot types:
 
@@ -39,7 +61,7 @@ For **pieplots** user can change color palette and remove specific step(s) from 
 
 All plots currently viewed (and any adjustments made by user) can be downloaded either individually (top right corner of each plot) or in a batch using button at the bottom of the Reads Statistics Viewer section. Currently supported format for batch download of all visualized plots is HTML.
 
-## sncRNA Counts Viewer
+## 2️⃣ sncRNA Counts Viewer
 
 ### Input
 
@@ -71,7 +93,7 @@ If a specific RNA can be aligned to multiple loci in genome (like many tRNA and 
        style="width:600px; margin-bottom:20px;">
 </picture>
 
-## DE Analysis Viewer
+## 3️⃣ DE Analysis Viewer
 
 ### Input
 
@@ -127,7 +149,7 @@ Sequences selected through **Heatmap sequence selection** subsection are visuali
        style="width:600px; margin-bottom:20px;">
 </picture>
 
-## Reads Coordinate Extraction
+## 4️⃣ Reads Coordinate Extraction
 
 ### Input
 

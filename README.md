@@ -10,7 +10,7 @@
 
 ## ⭐ Introduction
 
-PerSeqPIPE VIZ is a Streamlit application for visualization of results from [PerSeqPIPE pipeline](https://github.com/ktrachtova/perseqpipe). 
+PerSeqPIPE VIZ is a user-friendly application for visualization of results from [PerSeqPIPE pipeline](https://github.com/ktrachtova/perseqpipe) build using Streamlit library. 
 
 Current version of PerSeqPIPE VIZ has 4 sections, each specializing on interactive exploration / visualization of specific data produced by PerSeqPIPE:
 1. **Reads Counts Viewer**: Exploration and visualization of read statistics after each step of preprocessing in PerSeqPIPE workflow
@@ -29,17 +29,17 @@ First download the repository code locally.
 git pull https://github.com/ktrachtova/perseqpipe_viz.git
 ```
 
-Then install prerequisities stated in file [prerequisites](requirements.txt). Finally run following command:
+Next install prerequisities stated in [prerequisites](requirements.txt). Finally run following command:
 
 ```
 streamlit run app.py
 ```
 
-This will start the application in a your default web-browser. 
+This will opent the application in a your default web-browser. 
 
 ### Quick start (using Docker)
 
-If you do not have or do not want to install all prerequisites you can also use publicly available docker image with all dependencies already installed. 
+We provide publicly available Docker image with all dependencies already installed. To run PerSeqPIPE VIZ using docker, run following code:
 
 ```
 # For linux/amd64 infrastructure
@@ -65,7 +65,7 @@ docker run -e PORT=8501 -p 8501:8501 ktrachtok/perseqpipe_viz:arm64-1.0
 
 ## 📥 Inputs
 
-Inputs for the PerSeqPIPE VIZ are various files produced by the PerSeqPIPE workflow.
+Inputs for the PerSeqPIPE VIZ are various files produced by the PerSeqPIPE workflow. Here is the overview of which files are required for which section of the PerSeqPIPE VIZ application.
 
 | Tab                  | Input file(s)                          |
 |----------------------|----------------------------------------|
@@ -74,9 +74,16 @@ Inputs for the PerSeqPIPE VIZ are various files produced by the PerSeqPIPE workf
 | DE Analysis Viewer   | `DE_analysis_[isomirs\|mirna\|sncrna]_results.tsv`, `DE_analysis_[isomirs\|mirna\|sncrna]_counts.tsv` |
 | Reads Coordinate Extraction | `{sample}.genome.Aligned.sortedByCoord.out.bam` |
 
-For description of each input file, please got to [PerSeqPIPE VIZ Sections](docs/sections.md).
+For description of each input file and its location withing PerSeqPIPE results, please got to [PerSeqPIPE VIZ Sections](docs/sections.md).
 
 ### Providing inputs from different tools
 
-As long as an input file for specific part of PerSeqPIPE is following requirement format (columns, type of data etc.) then PerSePIPE VIZ will be able to work with it. If you want to visualize data obtained elsewhere, we recommend to inspect  [example inputs](test_data/) for the PerSeqPIPE VIZ and copy the format. 
+As long as an input file for specific section of PerSeqPIPE VIZ is following requirement format (columns, type of data etc.) then PerSePIPE VIZ will be able to work with it. If you want to visualize data obtained elsewhere, we recommend to inspect  [example inputs](test_data/) we provide and copy the format (column names, separators etc.). 
 
+## 🎺 Credits
+
+PerSeqPIPE VIZ application is written and maintaned by Karolina Trachtova (karolina.trachtova@ceitec.muni.cz).
+
+## ⁉️ Support
+
+In case of question, found bugs or suggestions for improvement please open new issue [here](https://github.com/ktrachtova/perseqpipe_viz/issues).
