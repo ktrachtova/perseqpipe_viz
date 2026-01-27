@@ -30,9 +30,16 @@
 |---------------------------|--------------------------------|
 | `read_counts_summary.csv` | `{project_name}/all_stats/`    |
 
+For description of individual columns from the `read_counts_summary.csv` please go to documentation of PerSeqPIPE [here](https://github.com/ktrachtova/perseqpipe/blob/main/docs/outputs.md#reads-statistics).
+
+Custom CSV/TSV file (comma or tab separated) can be used as an input as long as it comply with following requirements:
+* first column is `sample`
+* other columns contain either read counts or percentages
+* name of a column with percentage has to end with string "_%"
+
 ### Reads table
 
-Provides visualization of the read counts summary CSV file created by the PerSeqPIPE workflow called `read_counts_summary.csv`. This file contains summary for number of reads passing each preprocessing and quantification step. For description of individual columns from the `read_counts_summary.csv` please go to documentation of PerSeqPIPE [here](https://github.com/ktrachtova/perseqpipe/blob/main/docs/outputs.md#reads-statistics).
+**Reads Table** provides visualization of the read counts summary CSV file created by the PerSeqPIPE workflow called `read_counts_summary.csv`. This file contains summary for number of reads passing each preprocessing and quantification step.
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="images/reads_statistics_viewer/reads_table.png">
@@ -68,6 +75,8 @@ All plots currently viewed (and any adjustments made by user) can be downloaded 
 | input file                             | location in PerSeqPIPE results                     |
 |----------------------------------------|----------------------------------------------------|
 | `{sample}.genome.short_rna_counts.tsv` | `{project_name}/rna_quantification/genome/counts/` |
+
+The input table format is in detail described [here](https://github.com/ktrachtova/perseqpipe/blob/main/docs/outputs.md#sncrna-quantification-output-file-format).
 
 
 ### Overview
@@ -123,7 +132,7 @@ By default, a table showing raw counts will be rendered after the input files ar
        style="width:600px; margin-bottom:20px;">
 </picture>
 
-PCA plot will be renred if **VST** or **DESeq2-normalized counts** are selected. User can adjust color for conditions, point size, font size for both axes, tick labels, legen and title. 
+PCA plot will be rendered if **VST** or **DESeq2-normalized counts** are selected. User can adjust color for conditions, point size, font size for both axes, tick labels, legend and title. 
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="images/de_analysis_viewer/pca_plot.png">
@@ -133,7 +142,7 @@ PCA plot will be renred if **VST** or **DESeq2-normalized counts** are selected.
 
 ### Heatmap
 
-First subsection **Heatmap sequence selection** allow users to filter genes/sequences for heatmap based on **log2FC thresholds**, **baseMean**, **p-value** and **adjusted p-value**. User can also switch between different pairwise comparisons (if more than 2 conditions were present inside the design file for DE Analysis) and between different normalization types (raw, VST, DESeq2-normalized).
+First subsection called **Heatmap sequence selection** allow users to filter genes/sequences for heatmap based on **log2FC thresholds**, **baseMean**, **p-value** and **adjusted p-value**. User can also switch between different pairwise comparisons (if more than 2 conditions were present inside the design file for DE Analysis) and between different normalization types (raw, VST, DESeq2-normalized).
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="images/de_analysis_viewer/heatmap_seq_selection.png">

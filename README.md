@@ -10,36 +10,36 @@
 
 ## ⭐ Introduction
 
-PerSeqPIPE VIZ is a user-friendly application for visualization of results from [PerSeqPIPE pipeline](https://github.com/ktrachtova/perseqpipe) build using Streamlit library. 
+PerSeqPIPE VIZ is a user-friendly application for visualization of results from [PerSeqPIPE pipeline](https://github.com/ktrachtova/perseqpipe), built using Streamlit library. 
 
-Current version of PerSeqPIPE VIZ has 4 sections, each specializing on interactive exploration / visualization of specific data produced by PerSeqPIPE:
-1. **Reads Counts Viewer**: Exploration and visualization of read statistics after each step of preprocessing in PerSeqPIPE workflow
+Current version of PerSeqPIPE VIZ has 4 sections, each specializing in interactive exploration and visualization of specific data produced by PerSeqPIPE:
+1. **Reads Counts Viewer**: Exploration and visualization of read statistics after each step of preprocessing in the PerSeqPIPE workflow
 2. **sncRNA Counts Viewer**: Exploration of sequence-centric results from PerSeqPIPE workflow
-3. **DE Analysis Viewer**: Visualization of results from Differential Expression analysis, including PCA plot and interactive heatmaps
-4. **Reads Coordinate Extraction**: Extract information about specific read sequence, such as coordinates for visualization in [IGV tool](https://igv.org/), mismatches, strand etc.
+3. **DE Analysis Viewer**: Visualization of results from differential dxpression (DE) analysis, including PCA plot and interactive heatmaps
+4. **Reads Coordinate Extraction**: Extract information about specific read sequences, such as coordinates for visualization in the [IGV tool](https://igv.org/), mismatches, strand etc.
 
-For more information about each section, go to [Sections documentation](docs/sections.md).
+For more information about each section, see the [Sections documentation](docs/sections.md).
 
 ## 💻 Usage
 
 ### Quick start (local environment)
 
-First download the repository code locally. 
+First, download the repository code locally. 
 ```
-git pull https://github.com/ktrachtova/perseqpipe_viz.git
+git clone https://github.com/ktrachtova/perseqpipe_viz.git
 ```
 
-Next install prerequisities stated in [prerequisites](requirements.txt). Finally run following command:
+Next, install prerequisities stated in [requirements](requirements.txt). Finally, run the following command:
 
 ```
 streamlit run app.py
 ```
 
-This will opent the application in a your default web-browser. 
+This will automnatically open the application in a your default web browser. 
 
 ### Quick start (using Docker)
 
-We provide publicly available Docker image with all dependencies already installed. To run PerSeqPIPE VIZ using docker, run following code:
+Alternatively, we provide publicly available Docker image with all dependencies already installed. To run PerSeqPIPE VIZ using docker, execute the following code:
 
 ```
 # For linux/amd64 infrastructure
@@ -50,15 +50,14 @@ docker run -p 8502:8502 ktrachtok/perseqpipe_viz:amd64-1.0
 docker pull ktrachtok/perseqpipe_viz:arm64-1.0
 docker run -p 8502:8502 ktrachtok/perseqpipe_viz:arm64-1.0
 ```
-
-This will start the PerSeqPIPE VIZ at `http://0.0.0.0:8502` (when running through docker, the web browser will not automatically open, it must be started by the user). The application will be available after this message appears in the terminal:
+This will start the PerSeqPIPE VIZ at `http://0.0.0.0:8502`. When running through Docker, the web browser will not automatically open and must be started by the user. The application will be available after the following message appears in the terminal:
 ```
 You can now view your Streamlit app in your browser.
 
 URL: http://0.0.0.0:8502
 ```
 
-The port `8502` can be changed to whichever port is available using variable `PORT`.
+The port `8502` can be changed to any available port using the `PORT` environment variable.
 ```
 docker run -e PORT=8501 -p 8501:8501 ktrachtok/perseqpipe_viz:arm64-1.0
 ```
@@ -78,7 +77,7 @@ For description of each input file and its location withing PerSeqPIPE results, 
 
 ### Providing inputs from different tools
 
-As long as an input file for specific section of PerSeqPIPE VIZ is following requirement format (columns, type of data etc.) then PerSePIPE VIZ will be able to work with it. If you want to visualize data obtained elsewhere, we recommend to inspect  [example inputs](test_data/) we provide and copy the format (column names, separators etc.). 
+As long as an input file for a specific section of PerSeqPIPE VIZ follows required format (columns, data types, etc.), then PerSePIPE VIZ will be able to work with it. If you want to visualize data obtained elsewhere, we recommend to inspect  [example inputs](test_data/) we provide and copy their format (column names, separators etc.). 
 
 ## 🎺 Credits
 
