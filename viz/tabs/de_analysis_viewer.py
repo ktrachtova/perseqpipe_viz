@@ -112,9 +112,9 @@ def render_tab():
     col1, col2 = st.columns(2)
 
     with col1:
-        uploaded_de = st.file_uploader("Upload TSV file with DE results", type=["tsv"], help="Expecting file with required columns 'gene' (miRNA/isomiRs) or 'sequence' (sncRNA), 'baseMean' and then at least 4 columns containing word 'stat', 'pvalue', 'padj', and 'logFC'. Multiple such columns can be present and should contain suffix '_cond1_vs_cond2' to specify comparison or '_lrt' for specifying these are from a LRT test.")
+        uploaded_de = st.file_uploader("Upload TSV file with DE results", type=["tsv"], help="Expecting file with required columns 'gene' (miRNA/isomiRs) or 'sequence' (sncRNA), 'baseMean' and then at least 4 columns containing word 'stat', 'pvalue', 'padj', and 'logFC'. Multiple such columns can be present and should contain suffix '_cond1_vs_cond2' to specify comparison or '_lrt' for specifying these are from a LRT test. More information can be found [here](https://github.com/ktrachtova/perseqpipe/blob/main/docs/outputs.md#sncrna-quantification-output-file-format).")
     with col2:
-        uploaded_counts = st.file_uploader("Upload TSV file with counts", type=["tsv"], help="Expecting file with first column 'gene' with miRNA/isomiR and variable number of columns with counts, one per sample. Name of ach count column should consist of sample and a suffix stating what types of counts these are ('_raw', '_norm', '_vst').")
+        uploaded_counts = st.file_uploader("Upload TSV file with counts", type=["tsv"], help="Expecting file with first column 'gene' with miRNA/isomiR and variable number of columns with counts, one per sample. Name of ach count column should consist of sample and a suffix stating what types of counts these are ('_raw', '_norm', '_vst'). More information can be found [here](https://github.com/ktrachtova/perseqpipe/blob/main/docs/outputs.md#sncrna-quantification-output-file-format)")
 
     if uploaded_counts is not None:
         metadata_df, norm_dfs = read_counts_table(uploaded_counts)

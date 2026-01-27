@@ -13,7 +13,7 @@ def render_tab():
     st.title("Reads Statistics Viewer")
 
     # Upload a file
-    uploaded_stats = st.file_uploader("Upload a CSV/TSV file (**read_counts_summary.csv**)", type=["csv","tsv"], key='stats', help="CSV/TSV file with comma or tab separator. If visualizing PerSeqPIPE results, import file **read_counts_summary.csv** from `all_stats/` folder.")
+    uploaded_stats = st.file_uploader("Upload a CSV/TSV file (**read_counts_summary.csv**)", type=["csv","tsv"], key='stats', help="CSV/TSV file with comma or tab separator. If visualizing PerSeqPIPE results, import file **read_counts_summary.csv** from `all_stats/` folder, format is described [here](https://github.com/ktrachtova/perseqpipe/blob/main/docs/outputs.md#reads-statistics).")
 
     # Try to render content only if file is uploaded
     if uploaded_stats is not None:
