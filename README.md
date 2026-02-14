@@ -9,8 +9,7 @@
 [![PerSeqPipe](https://img.shields.io/badge/repo-PerSeqPIPE-20B2AA)](https://github.com/ktrachtova/perseqpipe)
 
 ## ⭐ Introduction
-
-PerSeqPIPE VIZ is a user-friendly application for visualization of results from [PerSeqPIPE pipeline](https://github.com/ktrachtova/perseqpipe), built using Streamlit library. 
+PerSeqPIPE VIZ is a user-friendly application for visualizing results from the [PerSeqPIPE pipeline](https://github.com/ktrachtova/perseqpipe), built using the Streamlit library.
 
 Current version of PerSeqPIPE VIZ has 4 sections, each specializing in interactive exploration and visualization of specific data produced by PerSeqPIPE:
 1. **Reads Counts Viewer**: Exploration and visualization of read statistics after each step of preprocessing in the PerSeqPIPE workflow
@@ -43,12 +42,12 @@ Alternatively, we provide publicly available Docker image with all dependencies 
 
 ```
 # For linux/amd64 infrastructure
-docker pull ktrachtok/perseqpipe_viz:amd64-1.0
-docker run -p 8502:8502 ktrachtok/perseqpipe_viz:amd64-1.0
+docker pull ktrachtok/perseqpipe_viz:amd64-1.0.0
+docker run -p 8502:8502 ktrachtok/perseqpipe_viz:amd64-1.0.0
 
 # For arm infrastructure
-docker pull ktrachtok/perseqpipe_viz:arm64-1.0
-docker run -p 8502:8502 ktrachtok/perseqpipe_viz:arm64-1.0
+docker pull ktrachtok/perseqpipe_viz:arm64-1.0.0
+docker run -p 8502:8502 ktrachtok/perseqpipe_viz:arm64-1.0.0
 ```
 This will start the PerSeqPIPE VIZ at `http://0.0.0.0:8502`. When running through Docker, the web browser will not automatically open and must be started by the user. The application will be available after the following message appears in the terminal:
 ```
@@ -85,4 +84,4 @@ PerSeqPIPE VIZ application is written and maintaned by Karolina Trachtova (karol
 
 ## ⁉️ Support
 
-In case of question, found bugs or suggestions for improvement please open new issue [here](https://github.com/ktrachtova/perseqpipe_viz/issues).
+In case of question, bugs or suggestions for improvement please open new issue [here](https://github.com/ktrachtova/perseqpipe_viz/issues).
