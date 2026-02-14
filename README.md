@@ -21,24 +21,10 @@ For more information about each section, see the [Sections documentation](docs/s
 
 ## 💻 Usage
 
-### Quick start (local environment)
 
-First, download the repository code locally. 
-```
-git clone https://github.com/ktrachtova/perseqpipe_viz.git
-```
+### 🐳 Quick start (using Docker)
 
-Next, install prerequisities stated in [requirements](requirements.txt). Finally, run the following command:
-
-```
-streamlit run app.py
-```
-
-This will automnatically open the application in a your default web browser. 
-
-### Quick start (using Docker)
-
-Alternatively, we provide publicly available Docker image with all dependencies already installed. To run PerSeqPIPE VIZ using docker, execute the following code:
+We provide a publicly available Docker image with **all dependencies already installed**. To run PerSeqPIPE VIZ using docker, execute the following code:
 
 ```
 # For linux/amd64 infrastructure
@@ -49,7 +35,7 @@ docker run -p 8502:8502 ktrachtok/perseqpipe_viz:amd64-1.0.0
 docker pull ktrachtok/perseqpipe_viz:arm64-1.0.0
 docker run -p 8502:8502 ktrachtok/perseqpipe_viz:arm64-1.0.0
 ```
-This will start the PerSeqPIPE VIZ at `http://0.0.0.0:8502`. When running through Docker, the web browser will not automatically open and must be started by the user. The application will be available after the following message appears in the terminal:
+This will start PerSeqPIPE VIZ at `http://0.0.0.0:8502`. When running through Docker, the web browser will not open automatically and must be started by the user. The application will be available after the following message appears in the terminal:
 ```
 You can now view your Streamlit app in your browser.
 
@@ -60,6 +46,24 @@ The port `8502` can be changed to any available port using the `PORT` environmen
 ```
 docker run -e PORT=8501 -p 8501:8501 ktrachtok/perseqpipe_viz:arm64-1.0
 ```
+
+### 🔷 Quick start (local installation)
+
+Alternatively, PerSeqPIPE VIZ can also be run locally (without Docker). 
+
+First, download the repository code locally. 
+```
+git clone https://github.com/ktrachtova/perseqpipe_viz.git
+```
+
+Next, install prerequisities stated in [requirements](requirements.txt) using [`pip`](https://pypi.org/). Finally, run the following command:
+
+```
+streamlit run app.py
+```
+
+This will automnatically open the application in a your default web browser. 
+
 
 ## 📥 Inputs
 
@@ -77,6 +81,10 @@ For description of each input file and its location withing PerSeqPIPE results, 
 ### Providing inputs from different tools
 
 As long as an input file for a specific section of PerSeqPIPE VIZ follows required format (columns, data types, etc.), then PerSePIPE VIZ will be able to work with it. If you want to visualize data obtained elsewhere, we recommend to inspect  [example inputs](test_data/) we provide and copy their format (column names, separators etc.). 
+
+## 🔆 System requirements
+
+PerSeqPIPE VIZ does not require any special hardware or system resources beyond a standard modern computer. The application can run on typical desktop or laptop environments (macOS, or Linux) with Docker or Python installed, depending on the chosen setup method.
 
 ## 🎺 Credits
 
