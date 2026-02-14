@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-* First public release of PerSeqPIPE VIZ, a Streamlit-based application for visualizing PerSeqPIPE results.
+* First public release of PerSeqPIPE VIZ, a Streamlit-based application for visualizing [PerSeqPIPE](https://github.com/ktrachtova/perseqpipe)(v1.0.0) results
 * Four interactive modules:
     * Reads Counts Viewer
     * sncRNA Counts Viewer
